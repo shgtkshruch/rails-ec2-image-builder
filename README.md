@@ -12,3 +12,20 @@ The `cdk.json` file tells the CDK Toolkit how to execute your app.
  * `cdk deploy`      deploy this stack to your default AWS account/region
  * `cdk diff`        compare deployed stack with current state
  * `cdk synth`       emits the synthesized CloudFormation template
+
+## Docker
+
+```sh
+$ COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose build .
+```
+
+```sh
+# Validate
+$ docker-compose run awstoe ./awstoe validate --documents app/install-rails-node-nginx.yml
+
+# Build
+$ docker-compose run awstoe ./awstoe run --documents app/install-rails-node-nginx.yml --phases build
+
+# Shell
+$ docker-compose exec awstoe bash
+```

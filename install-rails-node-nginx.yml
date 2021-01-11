@@ -1,0 +1,61 @@
+name: InstallRubyNodeNginx
+description: Install Ruby, Node and Nginx
+schemaVersion: 1.0
+
+phases:
+  - name: build
+    steps:
+      - name: InstallNginx
+        action: ExecuteBash
+        inputs:
+          commands:
+            - |
+              sudo amazon-linux-extras install -y nginx1
+              sudo service nginx start
+      - name: InstallNodejs
+        action: ExecuteBash
+        inputs:
+          commands:
+            - |
+              node_major_version=14
+              curl -sL "https://rpm.nodesource.com/setup_${node_major_version}.x" | sudo bash -
+              sudo yum install -y nodejs
+      - name: InstallRuby
+        action: ExecuteBash
+        inputs:
+          commands:
+            - |
+              ruby_version=3.0.0
+              rbenv_path=/usr/local/rbenv
+              
+              sudo yum install -y git gcc make readline-devel openssl-devel
+              
+              rm -rf $rbenv_path
+              git clone https://github.com/rbenv/rbenv.git $rbenv_path
+              cd $rbenv_path && src/configure && make -C src
+              
+              echo 'export RBENV_ROOT=$rbenv_path' >>  /etc/profile
+              echo 'export PATH="$RBENV_ROOT/bin:$PATH";' >>  /etc/profile
+              echo 'eval "$(rbenv init -)"' >>  /etc/profile
+              source /etc/profile
+              
+              git clone https://github.com/rbenv/ruby-build.git "$rbenv_path/plugins/ruby-build"
+              
+              rbenv install $ruby_version
+              rbenv global $ruby_version
+
+  - name: validate
+    steps:
+      - name: HelloWorldStep
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo "Hello World! Validate."
+
+  - name: test
+    steps:
+      - name: HelloWorldStep
+        action: ExecuteBash
+        inputs:
+          commands:
+            - echo "Hello World! Test."

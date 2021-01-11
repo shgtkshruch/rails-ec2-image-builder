@@ -1,0 +1,6 @@
+services:
+  awstoe:
+    build: .
+    tty: true
+    volumes:
+      - .:/tmp/imagebuilder/app
